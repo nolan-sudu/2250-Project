@@ -9,6 +9,7 @@ public class TitlePageScript : MonoBehaviour
     private string[] messages = { "This will be the first set of text", "This will be the second set of text" };
     private int currentMessageIndex = -1;
     private bool isTyping = false;
+    public string nextclass = "Customization";
 
     void Update()
     {
@@ -40,6 +41,6 @@ public class TitlePageScript : MonoBehaviour
 
     void LoadNextScene()
     {
-        SceneManager.LoadScene("Level 1");
+        SceneManager.LoadScene(nextclass);
     }
 }
