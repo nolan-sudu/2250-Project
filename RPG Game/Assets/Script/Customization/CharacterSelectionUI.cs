@@ -2,12 +2,13 @@ using UnityEngine;
 
 public class CharacterSelection : MonoBehaviour
 {
-    public GameObject[] characterPrefabs; 
-    public Transform previewPoint;        
+    public GameObject[] characterPrefabs;
+    public Transform previewPoint;
     private GameObject currentPreview;
 
     private void Start()
     {
+        ClearPreviewPoint();
         LoadSelectedCharacter();
         UpdateCharacterPreview();
     }
@@ -15,9 +16,7 @@ public class CharacterSelection : MonoBehaviour
     public void NextCharacter()
     {
         int currentIndex = PlayerPrefs.GetInt("SelectedCharacter", 0);
-
         currentIndex = (currentIndex + 1) % characterPrefabs.Length;
-
         PlayerPrefs.SetInt("SelectedCharacter", currentIndex);
         UpdateCharacterPreview();
     }
@@ -25,9 +24,7 @@ public class CharacterSelection : MonoBehaviour
     public void PreviousCharacter()
     {
         int currentIndex = PlayerPrefs.GetInt("SelectedCharacter", 0);
-
         currentIndex = (currentIndex - 1 + characterPrefabs.Length) % characterPrefabs.Length;
-
         PlayerPrefs.SetInt("SelectedCharacter", currentIndex);
         UpdateCharacterPreview();
     }
@@ -40,20 +37,15 @@ public class CharacterSelection : MonoBehaviour
         {
             Debug.LogWarning("Invalid index, resetting to 0");
             selectedIndex = 0;
-            PlayerPrefs.SetInt("SelectedCharacter", 0); 
+            PlayerPrefs.SetInt("SelectedCharacter", 0);
         }
 
-        if (currentPreview != null)
-        {
-            Destroy(currentPreview);
-        }
+        ClearPreviewPoint();
 
-        currentPreview = Instantiate(characterPrefabs[selectedIndex], previewPoint.position + new Vector3(0, 0, 2f), Quaternion.identity);
-
-        currentPreview.transform.SetParent(previewPoint, false);
+        currentPreview = Instantiate(characterPrefabs[selectedIndex], previewPoint);
         currentPreview.transform.localPosition = Vector3.zero;
         currentPreview.transform.localRotation = Quaternion.Euler(0, 135, 0);
-        currentPreview.transform.localScale = Vector3.one * 1.2f; 
+        currentPreview.transform.localScale = Vector3.one * 1.2f;
     }
 
     private void LoadSelectedCharacter()
@@ -63,5 +55,13 @@ public class CharacterSelection : MonoBehaviour
             PlayerPrefs.SetInt("SelectedCharacter", 0);
         }
         UpdateCharacterPreview();
+    }
+
+    private void ClearPreviewPoint()
+    {
+        foreach (Transform child in previewPoint)
+        {
+            Destroy(child.gameObject);
+        }
     }
 }
