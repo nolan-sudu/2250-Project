@@ -1,42 +1,34 @@
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 
 public class PlayerNameInitializer : MonoBehaviour
 {
     public InputField nameInputField;
     public Button startButton;
 
-    private string playerName;
-
-    void Start()
+    public static string PlayerName { get; private set; } 
+    private void Start()
     {
-        playerName = "";
-        startButton.onClick.AddListener(StartGame);
+        nameInputField.text = "";
+
+        startButton.onClick.AddListener(SavePlayerName);
     }
 
-    void StartGame()
+    private void SavePlayerName()
     {
-        string newName = nameInputField.text;
+        string playerName = nameInputField.text.Trim();
 
-        if (!string.IsNullOrWhiteSpace(newName))
+        if (!string.IsNullOrEmpty(playerName))
         {
-            playerName = newName;
-            PlayerPrefs.SetString("PlayerName", playerName);
+            PlayerName = playerName;
+            PlayerPrefs.SetString("PlayerName", PlayerName);
             PlayerPrefs.Save();
-            SceneManager.LoadScene("GameScene");
+
+            Debug.Log("Player name saved: " + PlayerName);
         }
         else
         {
-            Debug.Log("Name cannot be empty!");
-        }
-    }
-
-    void OnEnable()
-    {
-        if (PlayerPrefs.HasKey("PlayerName"))
-        {
-            playerName = PlayerPrefs.GetString("PlayerName");
+            Debug.LogWarning("Player name is empty! Please enter a name.");
         }
     }
 }
